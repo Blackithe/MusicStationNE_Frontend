@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Music Station Developer</title>
+  <link href="https://fonts.googleapis.com/css?family=Karla:400,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.materialdesignicons.com/4.8.95/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+  <main>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-6 login-section-wrapper">
+          <div class="login-wrapper my-auto">
+            <h1 class="login-title">For Developers</h1>
+            <form action="#!">
+              <div class="form-group">
+                <label for="email">Usuario</label>
+                <input id="usuario" type="email" name="email" id="email" class="form-control" placeholder="username">
+              </div>
+              <div class="form-group mb-4">
+                <label for="password">Contraseña</label>
+                <input id="password" type="password" name="password" id="password" class="form-control" placeholder="contraseña">
+              </div>
+              <input onclick="loguear()" name="login" id="login" class="btn btn-block login-btn" type="button" value="Login">
+            </form>
+            <a href="#!" class="forgot-password-link">¿Olvidó su contraseña?</a>
+            <p></p>
+            <p class="login-wrapper-footer-text"><a onclick="inicio()" href="#!" class="text-reset">Regresar a Login Estandar</a></p>
+            <p class="login-wrapper-footer-text">¡Contactactanos en instagram!   <a onclick= "instagram()" href="#!" class="text-reset"><img src="images/instagram.png" alt="logo" class="logo"></a></p>
+            <p></p>
+            <div>Iconos diseñados por <a href="https://www.flaticon.es/autores/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.es/" title="Flaticon">www.flaticon.es</a></div>
+          </div>
+        </div>
+        <div class="col-sm-6 px-0 d-none d-sm-block">
+          <img src="images/loginAdmin.jpg" alt="login image" class="login-img">
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script>
+    function inicio(){
+      location.href="inicio.html"
+    }
+    function loguear(){
+      var usuario = document.querySelector('#usuario').value
+      var contra = document.querySelector('#password').value
+      var datos = {
+        'usuario': usuario,
+        'password': contra
+      }
+      console.log(datos)
+      fetch('http://127.0.0.1:3000/loginAdmin',{
+        method: 'POST',
+        body: JSON.stringify(datos),
+        headers:{
+          'Content-Type': 'application/json'
+        }
+      }).then(res => res.json())
+      .catch(e => {
+      console.error('Este es el error: ',e)
+      swal({
+          title: "Error!",
+          text: ">:D",
+          icon: "error",
+          });
+      })
+      .then(response =>{
+        console.log(response);
+        console.log(response.message)
+        if(response.message == "Failed"){
+            swal({
+              title: "Error",
+              text: "Usuario o contraseña incorrectos",
+              icon: "error",
+              });
+        }else{
+            swal("Nice", {
+            text: "Sesion iniciada correctamente",
+            icon: "success",
+            })
+            .then(() => {
+            sessionStorage.setItem("usuario",usuario)
+            location.href="principalAdmin.html"
+            });  
+        }
+        }) 
+    }
+  </script>
+</body>
+</html>

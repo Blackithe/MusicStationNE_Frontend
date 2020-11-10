@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <title>Administracion</title>
+  </head>
+  <body onload="MostrarCanciones()">
+    <nav class="navbar navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Canciones</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Solicitudes<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a onclick="usuarios()" class="nav-link" href="#">Usuarios</a>
+            </li>
+            <li class="nav-item">
+              <a onclick="registroAdmin()" class="nav-link" href="#">Registrar Usuario/Administrador</a>
+            </li>
+            <li class="nav-item">
+              <a onclick="cerrarSesion()" class="nav-link" href="#">Cerrar Sesion</a>
+            </li>
+          </ul>
+        </div>
+    </nav>
+    
+    <h1 class="text-center">Canciones Registradas</h1>
+    <div class="section-title">
+      <div class="text-center">
+        <button onclick="cargarArchivo()" type="button" class="btn btn-secondary">Cargar Canciones</button>
+        <input type="file" id="file" />
+      </div>
+    </div>
+    <table class="table">
+      <thead>
+          <tr>
+          <th scope="col">Nombre</th>
+          <th scope="col">Artista</th>
+          <th scope="col">Album</th>
+          <th scope="col">Fecha</th>
+          <th scope="col">Portada</th>
+          <th scope="col">Reproducir</th>
+          <th scope="col"></th>
+          </tr>
+      </thead>
+      <tbody id="CuerpoCanciones">
+      </tbody>
+    </table>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
+    <script src="https://unpkg.com/jspdf-autotable@3.5.13/dist/jspdf.plugin.autotable.js"></script>
+  <script>
+  function cargarArchivo(){
+        $('#file').parse({
+		config: {
+			delimiter: ";",
+			complete: GuardarCanciones,
+		},
+		before: function(file, inputElem)
+		{
+			console.log("Parsing file...", file);
+		},
+		error: function(err, file)
+		{
+			console.log("ERROR:", err, file);
+		},
+		complete: function()
+		{
+            console.log("Done with all files");
+        }
+        });
+      }
+
+
+     async function GuardarCanciones(results) {
+        console.log(results.data)
+        var data = results.data;
+        var val = true
+
+
+        for (i = 0; i < data.length; i++) {
+            var nombre = data[i][0]
+            var artista = data[i][1]
+            var album = data[i][2]
+            var fecha = data[i][3]
+            var imagen = data[i][4]
+            var spotify = data[i][5]
+            var youtube = data[i][6]
+            var objeto = {
+                'nombre': nombre,
+                'artista': artista,
+                'album': album,
+                'fecha': fecha,
+                'imagen': imagen,
+                'spotify': spotify,
+                'youtube': youtube       
+             }
+            console.log(objeto)
+            fetch('http://127.0.0.1:3000/Cancion', {
+            method: 'POST',
+            body: JSON.stringify(objeto),
+            headers:{
+                'Content-Type': 'application/json'
+            }
+            }).then(res => res.json())
+            .catch(error => {
+              console.error('Este es el error: ',e)
+            swal({
+            title: "Error!",
+            text: ">:D",
+            icon: "error",
+            });
+                val = false
+            })
+            .then(response =>{
+                console.log('Success:', response);
+            }) 
+            }
+            if(val = true)
+            {
+              swal("Nice", {
+                        text: "Canciones Cargadas Correctamente!",
+                        icon: "success",
+                        })
+    			MostrarCanciones()
+            }
+    }
+
+  function MostrarCanciones(){
+      var contenido = document.querySelector('#CuerpoCanciones') 
+      contenido.innerHTML = ""
+      fetch('http://127.0.0.1:3000/Cancion')
+      .then(response => response.json())
+      .catch(error => {
+      console.log(error)
+    })
+      .then(res => {
+      for (var i in res) {
+      console.log(res[i])
+      contenido.innerHTML += 
+        `<tr>
+        <th>${res[i].nombre}</th>
+        <th>${res[i].artista}</th>
+        <th>${res[i].album}</th>
+        <th>${res[i].fecha}</th>
+        <th><img src="${res[i].imagen}" class="img-fluid" height="30%" width="30%"> </th>
+        <th><iframe src="${res[i].spotify}" width="350" height="430" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></th>
+        <th><button value="${res[i].id}" type="button" onclick="Modificar(this)" class="btn btn-success">Modificar</button> <button value="${res[i].id}" type="button" onclick="borrarCancion(this)" class="btn btn-danger">Eliminar</button></th>
+        </tr>`
+      }
+    })
+  }
+  function borrarCancion(id){
+        var cancion = id.value
+        console.log(cancion)
+        fetch(`http://127.0.0.1:3000/Cancion/${cancion}`, {
+        method: 'DELETE'
+    }); 
+    MostrarCanciones()
+    }
+
+  function Modificar(id){
+    var cancion = id.value
+    sessionStorage.setItem("datos",cancion)
+    location.href="modificarCancion.html"
+  }  
+  
+  function generarPDF(){
+    var pdf = new jsPDF();
+    pdf.text(20,20,"Tabla de Canciones");
+    var columns = ["Nombre","Artista","Album","Fecha","Spotify"];
+    var data =[]
+    pdf.autoTable(columns,data,
+  { margin:{ top: 25 }}
+    );
+
+  pdf.save("mipdf.pdf");
+
+  }
+  function usuarios(){
+    location.href="usuariosAdmin.html"
+  }
+  function cerrarSesion(){
+    swal("Nice", {
+        text: "HASTA LA PROXIMAAAAA!",
+        icon: "success",
+        })
+        .then(() => {
+        location.href="inicioAdmin.html"
+        }); 
+  }
+  function registroAdmin(){
+    location.href="registroAdmin.html"
+  }
+  </script>
+  </body>
+</html>

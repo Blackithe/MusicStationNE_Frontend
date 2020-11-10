@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <title>Usuarios Registrados</title>
+  </head>
+  <body onload="MostrarUsuarios()">
+    <h1 class="text-center">Usuarios Registrados</h1>
+    <table class="table">
+        <thead>
+            <tr>
+            <th scope="col">Nombre</th>
+            <th scope="col">Apellido</th>
+            <th scope="col">Username</th>
+            <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody id="CuerpoUsuarios">
+        </tbody>
+    
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+    function MostrarUsuarios(){
+      var contenido = document.querySelector('#CuerpoUsuarios') 
+      contenido.innerHTML = ""
+      fetch('http://127.0.0.1:3000/Users')
+      .then(response => response.json())
+      .catch(error => {
+      console.log(error)
+    })
+      .then(res => {
+      for (var i in res) {
+      console.log(res[i])
+      contenido.innerHTML += 
+        `<tr>
+        <th>${res[i].nombre}</th>
+        <th>${res[i].apellido}</th>
+        <th>${res[i].username}</th>
+        <th><button value="${res[i].username}" onclick="Modificar(this)" type="button" class="btn btn-success">Modificar</button> <button value="${res[i].username}" type="button" onclick="borrarUser(this)" class="btn btn-danger">Eliminar</button></th>
+        </tr>`
+      }
+    })
+  }
+    function borrarUser(user){
+        var username = user.value
+        fetch(`http://127.0.0.1:3000/Users/${username}`, {
+        method: 'DELETE'
+    }); 
+    MostrarUsuarios()
+    }
+    function generarPDF(){
+
+    }
+    function Canciones(){
+        location.href= "principalAdmin.html"
+    }
+    function registrarAdmin(){
+      location.href="registroAdmin.html"
+    }
+    function cerrarSesion(){
+      swal("Nice", {
+        text: "HASTA LA PROXIMAAAAA!",
+        icon: "success",
+        })
+        .then(() => {
+        location.href="inicioAdmin.html"
+        }); 
+    }
+    function Modificar(user){
+      var username = user.value
+      sessionStorage.setItem("datos",username)
+      location.href="modificarUsuario.html"
+    }
+    </script>
+  </body>
+</html>
