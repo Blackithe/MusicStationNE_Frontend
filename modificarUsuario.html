@@ -63,7 +63,7 @@
         var userOrigin
         function llamarDatos(){
             var datosUser = sessionStorage.datos
-            fetch(`http://127.0.0.1:3000/Users/${datosUser}`)
+            fetch(`https://musicstationbackend201902745.herokuapp.com/Users/${datosUser}`)
           .then(response => response.json())
           .catch(error => {
             console.log(error)
@@ -92,7 +92,7 @@
                 'password': pass,
             }
         console.log(datos)
-        fetch(`http://127.0.0.1:3000/Users/${userOrigin}`,{
+        fetch(`https://musicstationbackend201902745.herokuapp.com/Users/${userOrigin}`,{
         method: 'PUT',
         body: JSON.stringify(datos),
         headers:{

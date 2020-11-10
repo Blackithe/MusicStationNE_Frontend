@@ -34,7 +34,7 @@
     function MostrarUsuarios(){
       var contenido = document.querySelector('#CuerpoUsuarios') 
       contenido.innerHTML = ""
-      fetch('http://127.0.0.1:3000/Users')
+      fetch('https://musicstationbackend201902745.herokuapp.com/Users')
       .then(response => response.json())
       .catch(error => {
       console.log(error)
@@ -54,7 +54,7 @@
   }
     function borrarUser(user){
         var username = user.value
-        fetch(`http://127.0.0.1:3000/Users/${username}`, {
+        fetch(`https://musicstationbackend201902745.herokuapp.com/Users/${username}`, {
         method: 'DELETE'
     }); 
     MostrarUsuarios()

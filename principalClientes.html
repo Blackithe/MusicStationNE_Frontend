@@ -56,7 +56,7 @@
             var nombre = document.querySelector('#usuario')
             var datosUser = sessionStorage.usuario
             nombre.innerHTML = `${datosUser}` 
-            fetch(`http://127.0.0.1:3000/Users/${datosUser}`)
+            fetch(`https://musicstationbackend201902745.herokuapp.com/Users/${datosUser}`)
           .then(response => response.json())
           .catch(error => {
             console.log(error)
@@ -68,7 +68,7 @@
          function llamarCanciones(){
             var contenido = document.querySelector('#CuerpoUsuarios') 
             contenido.innerHTML = ""
-            fetch('http://127.0.0.1:3000/Cancion')
+            fetch('https://musicstationbackend201902745.herokuapp.com/Cancion')
             .then(response => response.json())
             .catch(error => {
             console.log(error)

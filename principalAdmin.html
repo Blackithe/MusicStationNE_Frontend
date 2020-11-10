@@ -113,7 +113,7 @@
                 'youtube': youtube       
              }
             console.log(objeto)
-            fetch('http://127.0.0.1:3000/Cancion', {
+            fetch('https://musicstationbackend201902745.herokuapp.com/Cancion', {
             method: 'POST',
             body: JSON.stringify(objeto),
             headers:{
@@ -146,7 +146,7 @@
   function MostrarCanciones(){
       var contenido = document.querySelector('#CuerpoCanciones') 
       contenido.innerHTML = ""
-      fetch('http://127.0.0.1:3000/Cancion')
+      fetch('https://musicstationbackend201902745.herokuapp.com/Cancion')
       .then(response => response.json())
       .catch(error => {
       console.log(error)
@@ -170,7 +170,7 @@
   function borrarCancion(id){
         var cancion = id.value
         console.log(cancion)
-        fetch(`http://127.0.0.1:3000/Cancion/${cancion}`, {
+        fetch(`https://musicstationbackend201902745.herokuapp.com/Cancion/${cancion}`, {
         method: 'DELETE'
     }); 
     MostrarCanciones()
